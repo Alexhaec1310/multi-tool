@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { DataExtractorComponent } from '../../components/data-extractor/data-extractor.component';
-import { TableComponent } from '../../components/table/table.component';
-import { Employee } from '../../entities/employee';
+import { ExtractorComponent } from '../extractor/extractor.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { TableEmployeesComponent } from '../../components/table-employees/table-employees.component';
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css'],
   standalone: true,
-  imports: [DataExtractorComponent, TableComponent],
+  imports: [MatTabsModule, ExtractorComponent, TableEmployeesComponent],
 })
 export class MainComponent implements OnInit {
   constructor() {}

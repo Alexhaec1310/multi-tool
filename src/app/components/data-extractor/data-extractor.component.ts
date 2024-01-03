@@ -1,3 +1,4 @@
+import { SupabaseService } from './../../services/supabase.service';
 import { Component, OnInit } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
@@ -7,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import moment from 'moment';
 import { Employee, Signing, Time } from '../../entities/employee';
 import { EmployeesService } from '../../services/employees.service';
+import { EmployeeEntity } from '../../entities/employee.entity';
 
 @Component({
   selector: 'app-data-extractor',
@@ -29,7 +31,10 @@ export class DataExtractorComponent implements OnInit {
   extractingdata: boolean = false;
   employeeList: Employee[] = [];
 
-  constructor(private readonly employeeService: EmployeesService) {}
+  constructor(
+    private readonly employeeService: EmployeesService,
+    private readonly supabaseService: SupabaseService
+  ) {}
 
   ngOnInit() {}
 
@@ -55,10 +60,29 @@ export class DataExtractorComponent implements OnInit {
     reader.onload = (e) => {
       const text = (e.target as FileReader).result as string;
       this.employeeList = this.processFile(text);
+
+      this.saveEmployees();
+
       this.employeeService.setEmployees(this.employeeList);
       this.extractingdata = false;
     };
     reader.readAsText(this.fileSelected!);
+  }
+
+  async saveEmployees() {
+    const employeesToSave: EmployeeEntity[] = this.employeeList.map(
+      (employee) => {
+        return {
+          complete_name: employee.completeName,
+          start_date: employee.startDate,
+          end_date: employee.endDate,
+          signings: JSON.stringify(employee.signings),
+          total_time: JSON.stringify(employee.totalTime),
+        };
+      }
+    );
+
+    await this.supabaseService.saveEmployees(employeesToSave);
   }
 
   processFile(text: string) {

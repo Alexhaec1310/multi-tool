@@ -1,0 +1,51 @@
+<mat-card class="card">
+  <mat-card-header class="header">
+    <div class="data-container">
+      <div mat-card-avatar class="photo-container">
+        <mat-icon class="photo">account_circle</mat-icon>
+      </div>
+      <div class="data">
+        <mat-card-title>{{ employee.completeName }}</mat-card-title>
+        <mat-card-subtitle>
+          <div>
+            <span>Dias trabajados: </span>
+            <span>{{ employee.workedDays.length }}</span>
+          </div>
+          <div>
+            <span>Total horas: </span> <span>{{ employee.totalHours }}</span>
+          </div></mat-card-subtitle
+        >
+      </div>
+    </div>
+
+    <div>
+      <button mat-fab color="primary" (click)="showConfirmAttendandDialog()">
+        <mat-icon>check_circle_outline</mat-icon>
+      </button>
+    </div>
+  </mat-card-header>
+  <mat-card-content>
+    @for (workedDays of employee.workedDays; track $index) {
+    <div class="expansion-panel-container">
+      <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+          <mat-panel-title> {{ workedDays.startDate }} </mat-panel-title>
+          <mat-panel-description>
+            Horas trabajadas: {{ workedDays.workedHours }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div class="expansion-content">Fichajes Realizados:</div>
+        <div>
+          <ul>
+            @for (signing of workedDays.signings; track $index) {
+            <li>
+              {{ signing.hour }}
+            </li>
+            }
+          </ul>
+        </div>
+      </mat-expansion-panel>
+    </div>
+    }
+  </mat-card-content>
+</mat-card>

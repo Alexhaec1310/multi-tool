@@ -1,4 +1,4 @@
-import { Employee } from './../../entities/employee';
+import { Employee } from '../../entities/employee';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { EmployeesService } from '../../services/employees.service';
 import { AsyncPipe, NgClass } from '@angular/common';
@@ -23,9 +23,9 @@ import { CheckAttendanceDialogComponent } from '../checkAttendanceDialog/checkAt
 import { MatSortModule } from '@angular/material/sort';
 
 @Component({
-  selector: 'app-table',
-  templateUrl: './table.component.html',
-  styleUrls: ['./table.component.css'],
+  selector: 'app-table-bi',
+  templateUrl: './table-bi.component.html',
+  styleUrls: ['./table-bi.component.css'],
   standalone: true,
   imports: [
     AsyncPipe,
@@ -49,7 +49,7 @@ import { MatSortModule } from '@angular/material/sort';
     ]),
   ],
 })
-export class TableComponent implements OnInit, AfterViewInit {
+export class TableBIComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = [
     'completeName',
     'startDate',

@@ -1,0 +1,74 @@
+<div class="table-container">
+  <div class="filter-container">
+    <mat-form-field class="filter">
+      <mat-label>Filtrar</mat-label>
+      <input
+        matInput
+        (keyup)="applyFilter($event)"
+        placeholder="Ejemplo. nombre"
+        #input
+      />
+    </mat-form-field>
+    <button
+      [disabled]="employees.length === 0"
+      mat-fab
+      extended
+      color="primary"
+      (click)="exportTable()"
+    >
+      <mat-icon>arrow_downward</mat-icon>
+      Exportar a excel
+    </button>
+  </div>
+
+  <div>
+    <table
+      id="employeesTable"
+      mat-table
+      [dataSource]="dataSource"
+      class="mat-elevation-z8"
+      matSort
+      matSortActive="completeName"
+      matSortDirection="asc"
+      (matSortChange)="sortData($event)"
+      multiTemplateDataRows
+    >
+      <ng-container matColumnDef="completeName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="completeName">
+          Nombre
+        </th>
+        <td mat-cell *matCellDef="let employee">{{ employee.completeName }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="workedDays">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="workedDays">
+          Días trabajados
+        </th>
+        <td mat-cell *matCellDef="let employee">
+          {{ employee.workedDays.length }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="totalHours">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="startHour">
+          Total horas
+        </th>
+        <td mat-cell *matCellDef="let employee">
+          {{ employee.totalHours }}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr
+        mat-row
+        (click)="showDetail(row)"
+        *matRowDef="let row; columns: displayedColumns"
+      ></tr>
+    </table>
+
+    <mat-paginator
+      [pageSizeOptions]="[20, 30, 50, 100, 200]"
+      aria-label="Select page of users"
+    ></mat-paginator>
+  </div>
+</div>
