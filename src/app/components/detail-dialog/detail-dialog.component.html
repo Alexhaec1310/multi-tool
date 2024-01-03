@@ -19,13 +19,24 @@
     </div>
 
     <div>
+      <mat-form-field>
+        <mat-label>Seleccione mes</mat-label>
+        <mat-select
+          [(ngModel)]="selectedFilter"
+          (selectionChange)="filterChanged($event)"
+        >
+          @for (date of datesToFilter; track $index) {
+          <mat-option [value]="date">{{ date.verbose }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
       <button mat-fab color="primary" (click)="showConfirmAttendandDialog()">
         <mat-icon>check_circle_outline</mat-icon>
       </button>
     </div>
   </mat-card-header>
   <mat-card-content>
-    @for (workedDays of employee.workedDays; track $index) {
+    @for (workedDays of workedDaysList; track $index) {
     <div class="expansion-panel-container">
       <mat-expansion-panel hideToggle>
         <mat-expansion-panel-header>
