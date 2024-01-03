@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2%;
+}
+
+.card {
+  width: 40%;
+  height: 30%;
+}
+
+#csv {
+  display: none;
+}
+
+.header {
+  margin-bottom: 5%;
+}
+
+.content {
+  margin-bottom: 5%;
+}

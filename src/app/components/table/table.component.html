@@ -1,0 +1,162 @@
+<div class="table-container">
+  <div class="filter-container">
+    <mat-form-field class="filter">
+      <mat-label>Filtrar</mat-label>
+      <input
+        matInput
+        (keyup)="applyFilter($event)"
+        placeholder="Ejemplo. nombre"
+        #input
+      />
+    </mat-form-field>
+    <button
+      [disabled]="employees.length === 0"
+      mat-fab
+      extended
+      color="primary"
+      (click)="openCheckAttendanceDialog()"
+    >
+      <mat-icon>search</mat-icon>
+      Comprobar asistencia
+    </button>
+    <button
+      [disabled]="employees.length === 0"
+      mat-fab
+      extended
+      color="primary"
+      (click)="exportTable()"
+    >
+      <mat-icon>arrow_downward</mat-icon>
+      Exportar a excel
+    </button>
+  </div>
+
+  <div>
+    <table
+      id="employeesTable"
+      mat-table
+      [dataSource]="dataSource"
+      class="mat-elevation-z8"
+      matSort
+      matSortActive="completeName"
+      matSortDirection="asc"
+      (matSortChange)="sortData($event)"
+      multiTemplateDataRows
+    >
+      <ng-container matColumnDef="completeName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="completeName">Nombre</th>
+        <td mat-cell *matCellDef="let employee">{{ employee.completeName }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="startDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="startDate">Fecha entrada</th>
+        <td mat-cell *matCellDef="let employee">{{ employee.startDate }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="startHour">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="startHour">Hora entrada</th>
+        <td mat-cell *matCellDef="let employee">
+          {{ employee.signings[0].hour }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="endDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="endDate">Fecha salida</th>
+        <td mat-cell *matCellDef="let employee">{{ employee.endDate }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="endHour">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="endHour">Hora salida</th>
+        <td mat-cell *matCellDef="let employee">
+          {{ employee.signings[employee.signings.length - 1].hour }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="totalSignings">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="totalSignings">Fichajes</th>
+        <td
+          [ngClass]="employee.signings.length < 4 ? 'red' : 'green'"
+          mat-cell
+          *matCellDef="let employee"
+        >
+          {{ employee.signings.length }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="totalHours">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="totalHours">
+          Horas trabajadas
+        </th>
+        <td
+          [ngClass]="employee.totalTime.hours < 8 ? 'red' : 'green'"
+          mat-cell
+          *matCellDef="let employee"
+        >
+          {{ employee.totalTime.hours }} horas y {{ employee.totalTime.minutes }} minutos
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="expand">
+        <th mat-header-cell *matHeaderCellDef aria-label="row actions">
+          &nbsp;
+        </th>
+        <td mat-cell *matCellDef="let employee">
+          <button
+            mat-icon-button
+            aria-label="expand row"
+            (click)="
+              expandedElement = expandedElement === employee ? null : employee;
+              $event.stopPropagation()
+            "
+          >
+            @if (expandedElement === employee) {
+            <mat-icon>keyboard_arrow_up</mat-icon>
+            } @else {
+            <mat-icon>keyboard_arrow_down</mat-icon>
+            }
+          </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="expandedDetail">
+        <td
+          mat-cell
+          *matCellDef="let employee"
+          [attr.colspan]="displayedColumns.length"
+        >
+          <div
+            class="detail-employee-detail"
+            [@detailExpand]="
+              employee == expandedElement ? 'expanded' : 'collapsed'
+            "
+          >
+            <ul>
+              @for (signing of employee.signings; track $index) {
+              <li>{{ signing.date }} - {{ signing.hour }}</li>
+              }
+            </ul>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        class="detail-employee-row"
+        [class.detail-employee-expanded-row]="expandedElement === row"
+        (click)="expandedElement = expandedElement === row ? null : row"
+      ></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: ['expandedDetail']"
+        class="employee-detail-row"
+      ></tr>
+    </table>
+
+    <mat-paginator
+      [pageSizeOptions]="[20, 30, 50, 100, 200]"
+      aria-label="Select page of users"
+    ></mat-paginator>
+  </div>
+</div>
