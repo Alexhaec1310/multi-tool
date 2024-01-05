@@ -3,6 +3,7 @@ import { Signing } from './employee';
 export type EmployeeEntity = {
   id?: string;
   complete_name: string;
+  phone?: string;
   start_date: string;
   end_date: string;
   signings: string;
@@ -13,6 +14,7 @@ export type EmployeeEntity = {
 export type CompleteEmployee = {
   id: string;
   completeName: string;
+  phone?: string;
   workedDays: WorkedDays[];
   totalHours: string;
 };

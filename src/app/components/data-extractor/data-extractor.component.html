@@ -4,26 +4,35 @@
       <mat-card-title>{{ title }}</mat-card-title>
     </mat-card-header>
     <mat-card-content class="content">
-      <input id="csv" type="file" (change)="onFileChange($event)" #fileUpload accept=".csv" />
+      <input
+        id="csv"
+        type="file"
+        (change)="onFileChange($event)"
+        #fileUpload
+        accept=".csv"
+      />
       <div>
-        {{fileName || emptyFileName}}
+        {{ fileName || emptyFileName }}
         <button mat-mini-fab color="primary" (click)="fileUpload.click()">
           <mat-icon>attach_file</mat-icon>
         </button>
       </div>
     </mat-card-content>
     <mat-card-actions align="end">
-      <button mat-raised-button color="primary" (click)="convertData()" [disabled]="!fileSelected">
-        <mat-icon>search</mat-icon>
-        Extraer datos
+      <button mat-button mat-dialog-close>Cancelar</button>
+      <button
+        mat-button
+        color="primary"
+        (click)="convertData()"
+        [disabled]="!fileSelected"
+      >
+        Extraer
       </button>
     </mat-card-actions>
     <mat-card-footer>
       @if (extractingdata) {
-        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
       }
     </mat-card-footer>
   </mat-card>
 </div>
-
-

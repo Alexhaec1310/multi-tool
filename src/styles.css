@@ -7,3 +7,22 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+.green-snackbar {
+  background: rgb(65, 252, 134);
+  color: white;
+}
+.green-snackbar button {
+  background-color: rgb(65, 252, 134);
+  color: white;
+  border: none;
+}
+.red-snackbar {
+  background: #f44336;
+  color: white;
+}
+.red-snackbar button {
+  background-color: #f44336;
+  color: white !important;
+  border: none;
+}

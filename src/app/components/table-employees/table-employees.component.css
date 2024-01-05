@@ -17,7 +17,8 @@
 }
 
 .filter {
-  width: 30%;
+  flex: 1;
+  text-align: end;
 }
 
 .red {
@@ -54,4 +55,38 @@ tr.employee-detail-row {
 
 .mat-mdc-row:hover .mat-mdc-cell {
   background-color: #a881ed61;
+}
+
+.filters {
+  flex: 1;
+}
+.year,
+.month {
+  width: 25%;
+  margin-right: 10px;
+}
+
+.filter-input {
+  margin-right: 10px;
+}
+
+@media screen and (max-width: 600px) {
+  .filter-container {
+    display: inline;
+  }
+
+  .filter,
+  .filters {
+    width: 100%;
+  }
+
+  .year,
+  .month {
+    width: 40%;
+    margin-right: 10px;
+  }
+
+  .filter-input {
+    width: 82%;
+  }
 }

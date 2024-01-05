@@ -7,17 +7,22 @@
   width: 98%;
 }
 
-.filter-container {
+.table-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.table-header > .input-filter {
   display: flex;
   justify-content: flex-end;
 }
 
-.filter-container > button {
-  margin-left: 1%;
+.input-filter > .mat-mdc-form-field {
+  width: 60%;
 }
 
-.filter {
-  width: 30%;
+.filter-container > button {
+  margin-left: 1%;
 }
 
 .red {
@@ -44,4 +49,16 @@ tr.detail-employee-row:not(.detail-employee-expanded-row):active {
 tr.employee-detail-row {
   height: 0;
   background-color: rgb(246, 246, 246);
+}
+
+@media only screen and (max-width: 600px) {
+  .table-header {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .table-header > .input-filter {
+    display: flex;
+    justify-content: flex-start;
+  }
 }

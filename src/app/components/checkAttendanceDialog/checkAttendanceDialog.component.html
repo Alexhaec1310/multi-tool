@@ -2,9 +2,9 @@
 <div mat-dialog-content>
   <mat-form-field class="text-area">
     <mat-label>Pegar lista empleados</mat-label>
-    <textarea matInput #employeesToCheck rows="5"></textarea>
+    <textarea matInput #employeesToCheck rows="10"></textarea>
   </mat-form-field>
-  <h3>Empleados no presentados: {{noAttendant.length}}</h3>
+  <h3>Empleados no presentados: {{ noAttendant.length }}</h3>
   <ul>
     @for (employee of noAttendant; track $index) {
     <li>{{ employee }}</li>
@@ -12,8 +12,8 @@
   </ul>
 </div>
 <div mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cerrar</button>
   <button mat-button color="primary" (click)="check(employeesToCheck.value)">
     Comprobar
   </button>
-  <button mat-button mat-dialog-close>Cerrar</button>
 </div>

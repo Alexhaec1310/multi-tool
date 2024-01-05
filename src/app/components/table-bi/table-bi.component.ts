@@ -21,6 +21,12 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { CheckAttendanceDialogComponent } from '../checkAttendanceDialog/checkAttendanceDialog.component';
 import { MatSortModule } from '@angular/material/sort';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { DataExtractorComponent } from '../data-extractor/data-extractor.component';
+import { EmployeeEntity } from '../../entities/employee.entity';
+import { SupabaseService } from '../../services/supabase.service';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-table-bi',
@@ -37,6 +43,9 @@ import { MatSortModule } from '@angular/material/sort';
     MatIconModule,
     MatButtonModule,
     MatSortModule,
+    MatTooltipModule,
+    MatProgressBarModule,
+    MatSnackBarModule,
   ],
   animations: [
     trigger('detailExpand', [
@@ -74,9 +83,13 @@ export class TableBIComponent implements OnInit, AfterViewInit {
 
   expandedElement: Employee | undefined;
 
+  savingData: boolean = false;
+
   constructor(
     readonly employeeService: EmployeesService,
-    private readonly dialog: MatDialog
+    private readonly dialog: MatDialog,
+    private readonly supabaseService: SupabaseService,
+    private _snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
@@ -106,10 +119,36 @@ export class TableBIComponent implements OnInit, AfterViewInit {
 
   openCheckAttendanceDialog() {
     this.dialog.open(CheckAttendanceDialogComponent, {
-      width: '80vw',
-      height: '80vh',
+      width: '60vw',
+      height: '60vh',
       data: { employees: this.employees },
     });
+  }
+
+  openExtractDataDialog() {
+    this.dialog.open(DataExtractorComponent);
+  }
+
+  async saveEmployees() {
+    this.savingData = true;
+    const employeesToSave: EmployeeEntity[] = this.employees.map((employee) => {
+      return {
+        complete_name: employee.completeName,
+        start_date: employee.startDate,
+        end_date: employee.endDate,
+        signings: JSON.stringify(employee.signings),
+        total_time: JSON.stringify(employee.totalTime),
+      };
+    });
+
+    await this.supabaseService.saveEmployees(employeesToSave).then(() => {
+      this._snackBar.open('Datos guardados correctamente', '', {
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+        duration: 3000,
+      });
+    });
+    this.savingData = false;
   }
 
   sortData(sort: any) {

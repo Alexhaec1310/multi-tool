@@ -23,6 +23,19 @@ import { SupabaseService } from '../../services/supabase.service';
 import { CompleteEmployee, WorkedDays } from '../../entities/employee.entity';
 import { DetailDialogComponent } from '../detail-dialog/detail-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 @Component({
   selector: 'app-table-employees',
   templateUrl: './table-employees.component.html',
@@ -38,6 +51,11 @@ import { MatDialog } from '@angular/material/dialog';
     MatIconModule,
     MatButtonModule,
     MatSortModule,
+    MatSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatProgressBarModule,
+    MatTooltipModule,
   ],
   animations: [
     trigger('detailExpand', [
@@ -51,7 +69,14 @@ import { MatDialog } from '@angular/material/dialog';
   ],
 })
 export class TableEmployeesComponent implements OnInit {
-  displayedColumns: string[] = ['completeName', 'workedDays', 'totalHours'];
+  searchForm: FormGroup;
+
+  displayedColumns: string[] = [
+    'completeName',
+    'phone',
+    'workedDays',
+    'totalHours',
+  ];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) set matSort(sort: MatSort) {
     this.dataSource.sort = sort;
@@ -66,17 +91,34 @@ export class TableEmployeesComponent implements OnInit {
 
   expandedElement: Employee | undefined;
 
+  gettingData: boolean = false;
+
   constructor(
     readonly employeeService: EmployeesService,
     private readonly supabaseService: SupabaseService,
-    private readonly dialog: MatDialog
-  ) {}
+    private readonly dialog: MatDialog,
+    private fb: FormBuilder
+  ) {
+    this.searchForm = this.fb.group({
+      month: ['', Validators.required],
+      year: ['', Validators.required],
+    });
+  }
 
-  ngOnInit() {
-    this.supabaseService.getEmployees().then(({ data }) => {
+  ngOnInit() {}
+
+  findEmployees() {
+    if (this.searchForm.invalid) {
+      return;
+    }
+    this.gettingData = true;
+    const month = this.searchForm.get('month')?.value;
+    const year = this.searchForm.get('year')?.value;
+    this.supabaseService.getEmployees(month, year).then((data) => {
       this.sortedEmployees = this.transformData(data as EmployeeEntity[]);
       this.employees = this.sortedEmployees;
       this.dataSource.data = this.employees;
+      this.gettingData = false;
     });
   }
 
@@ -89,6 +131,7 @@ export class TableEmployeesComponent implements OnInit {
         groupedData[completeName] = {
           id: originalEmployee.id!,
           completeName: completeName,
+          phone: originalEmployee.phone,
           totalHours: '0h 0m',
           workedDays: [],
         };
@@ -115,7 +158,7 @@ export class TableEmployeesComponent implements OnInit {
         workedDays.map((workedDay) => workedDay.workedHours)
       );
 
-      employee.totalHours = `${totalWorkedHours.totalHoras}h ${totalWorkedHours.totalMinutos}m`;
+      employee.totalHours = `${totalWorkedHours.totalHoras} h ${totalWorkedHours.totalMinutos} m`;
     });
 
     return Object.values(groupedData);
@@ -169,6 +212,20 @@ export class TableEmployeesComponent implements OnInit {
       switch (sort.active) {
         case 'completeName':
           return this.compare(a.completeName, b.completeName, isAsc);
+        case 'workedDays':
+          return this.compare(a.workedDays.length, b.workedDays.length, isAsc);
+        case 'totalHours':
+          const formatTime = (time: any) => {
+            const matches = time.match(/\d+/g);
+            const hours = matches[0].toString().padStart(2, '0');
+            const minutes = matches[1].toString().padStart(2, '0');
+            return hours + ':' + minutes;
+          };
+          return this.compare(
+            formatTime(a.totalHours),
+            formatTime(b.totalHours),
+            isAsc
+          );
         default:
           return 0;
       }
@@ -183,9 +240,27 @@ export class TableEmployeesComponent implements OnInit {
 
   showDetail(employee: CompleteEmployee) {
     this.dialog.open(DetailDialogComponent, {
-      width: '50vw',
-      height: '70vh',
-      data: { employee },
+      width: '90%',
+      height: '80vh',
+      data: { employeeCompleteName: employee.completeName },
     });
+  }
+
+  months(): { index: string; name: string }[] {
+    const allMonths = [
+      { index: '01', name: 'Enero' },
+      { index: '22', name: 'Febrero' },
+      { index: '03', name: 'Marzo' },
+      { index: '04', name: 'Abril' },
+      { index: '05', name: 'Mayo' },
+      { index: '06', name: 'Junio' },
+      { index: '07', name: 'Julio' },
+      { index: '08', name: 'Agosto' },
+      { index: '09', name: 'Septiembre' },
+      { index: '10', name: 'Octubre' },
+      { index: '11', name: 'Noviembre' },
+      { index: '12', name: 'Diciembre' },
+    ];
+    return allMonths;
   }
 }
