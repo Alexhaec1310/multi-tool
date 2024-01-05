@@ -1,10 +1,29 @@
-<h1 mat-dialog-title>Confirmar asistencia - {{ today }}</h1>
+<h1 mat-dialog-title>Confirmar asistencia - {{ attendantDate }}</h1>
 <div mat-dialog-content>
   <div>
     Confirmar asistencia de <strong>{{ employee.completeName }}</strong
-    >. Para el dia de hoy.
+    >.
   </div>
+  <br />
   <div>
+    <mat-form-field class="date-picker">
+      <mat-label>Elige fecha para fichaje</mat-label>
+      <input
+        matInput
+        [matDatepicker]="picker"
+        [value]="today"
+        (dateChange)="dateChange($event)"
+        disabled
+      />
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="picker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #picker disabled="false"></mat-datepicker>
+    </mat-form-field>
+  </div>
+
+  <div class="w-100">
     <mat-radio-group (change)="onChange($event)">
       <mat-radio-button color="primary" value="morning"
         >Mañana</mat-radio-button
@@ -14,6 +33,16 @@
       >
       <mat-radio-button color="primary" value="night">Noche</mat-radio-button>
     </mat-radio-group>
+  </div>
+  <div class="w-100">
+    <br />
+    @if (!validForm) {
+
+    <mat-error>
+      <mat-icon color="error">info</mat-icon>Obligatorio rellenar fecha y
+      turno</mat-error
+    >
+    }
   </div>
 </div>
 <div mat-dialog-actions align="end">
